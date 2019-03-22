@@ -33,3 +33,11 @@
                    6，模型输出结果解码
                    7，返回输出结果
                     
+                    
+                    TODO 研究这个模型
+                  https://github.com/brightmart/text_classification.git   
+                  
+                  
+                  
+                  https://github.com/brightmart/bert_language_understanding
+                  
