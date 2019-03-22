@@ -51,6 +51,8 @@ object Seller_language_sum {
     val my_udf_2 = udf(getStringLanguage _) //将自定义函数注册为udf
 
     val out = mysqlDF.withColumn("messages_1", my_udf_2($"seller_message_1")) //使用udf进行转换操作
+
+
     out.write.mode(SaveMode.Overwrite).jdbc(url, "bt_paypal_dispute_info_seller_all_says_dec", properties)
 
     spark.stop()
