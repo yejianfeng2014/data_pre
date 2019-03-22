@@ -11,9 +11,11 @@
  
  5，预处理好的数据导出成txt 格式
  
-  格式如下 邮件主题 ##### 邮件内容
+  格式如下 邮件主题 # 邮件内容
   
-  示例如下： Others ##### not received order
+  示例如下： Others # not received order
+  
+  spark 在window 写入文件存在问题，这个数据建议从数据库直接导出   
   
   
   算法模型如下： 这个部分在python 代码里面实现

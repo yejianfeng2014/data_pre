@@ -60,7 +60,9 @@ object Update_language_error {
 
     val frame_selected = updated_end.select("subject", "parsed_html", "language_dec_1")
     val frame_union_languages = frame_en.union(frame_selected)
-    frame_union_languages.write.mode(SaveMode.Overwrite).jdbc(url, "bt_email_inbox_content_parsed_html_language_fixed", properties)
+
+    val frame = frame_union_languages.select("subject","parsed_html")
+    frame.write.mode(SaveMode.Overwrite).jdbc(url, "bt_email_inbox_content_parsed_html_language_fixed", properties)
 
     spark.stop()
 
