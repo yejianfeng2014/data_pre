@@ -1,0 +1,32 @@
+package my_spark
+
+import org.jsoup.Jsoup
+import org.jsoup.nodes.{Document, Element}
+import org.jsoup.select.Elements
+
+object Paser_html_test {
+
+
+  def main(args: Array[String]): Unit = {
+
+
+//    val html = "<html><head></head><body><div class=\"\">\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n    <title>Thanks for submitting a ticket</title>\n    <table cellpadding=\"0\" cellspacing=\"0\" style=\"border: 0px; padding: 0px; margin: 0px; position: absolute; display: none; float: left\">\n        <tbody>\n        <tr>\n            <td height=\"1\" style=\"font-size: 1px; line-height: 1px; padding: 0px;\">\n                <img border=\"0\" width=\"1\" height=\"1\" src=\"https://ib.adnxs.com/getuid?https://a.adrsp.net/dsp/ci/2/E4a8UejkpwWXJxF-MNy7T2i9jn9RWI4Y1wEe5nzZ4nyGTkXojQjFXwhQ6wkLOQMBu3P4C0LO2UleaxrylgbO9im5_cxPP9TqS9xm3WA/%24UID\">\n            </td>\n        </tr>\n        </tbody>\n    </table>\n    <table width=\"650\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n        <tbody>\n        <tr>\n            <td>\n                <!-- header -->\n                <table width=\"650\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n                    <tbody>\n                    <tr>\n                        <td width=\"650\" align=\"center\">\n                            <style type=\"text/css\">\n                                a {\n                                    text-decoration: none;\n                                }\n\n                                table {\n                                    word-wrap: break-word;\n                                }\n                            </style>\n                            <!-- header -->\n                            <!--Main top text-->\n                            <table width=\"566\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n                                <tbody>\n                                <tr>\n                                    <td align=\"center\" width=\"566\">\n                                        <div style=\"border: 6px solid #8d6767;padding: 20px;text-align: left;margin-top: 30px;\">\n                                            <div>type: Others</div>\n                                            <div>email: Fdialsingh@yahoo.com</div>\n                                            <div>name: florence  Dialsingh</div>\n                                            <div>content: How to order.. I am not seeing add to bag</div>\n                                        </div>\n                                    </td>\n                                </tr>\n                                </tbody>\n                            </table>\n                            <br>\n                            <br>\n                            <!-- footer -->\n                        </td>\n                    </tr>\n                    </tbody>\n                </table>\n            </td>\n        </tr>\n        </tbody>\n    </table>\n</div><img src=\"http://jmail.orderplus.com//mail/read?code=bWtuam5sbWk=\" style=\"width:1px;height:1px;opacity:0.1;\"/><img src=\"http://links.promptemails.com/o/29J/Pq81aC9peIKkqXicQpbGyy/beiO/8b18d21c\" alt=\"\"/></body></html>"
+
+    val html2 = "\"<html><head><meta charset=\"\"utf-8\"\"><title>Refund issue@259181111109</title></head><body><div class=\"\"\"\">\n  <meta http-equiv=\"\"Content-Type\"\" content=\"\"text/html; charset=utf-8\"\">\n  <title>Thanks for submitting a ticket</title>\n  <table cellpadding=\"\"0\"\" cellspacing=\"\"0\"\" style=\"\"border: 0px; padding: 0px; margin: 0px; position: absolute; display: none; float: left\"\">\n    <tbody>\n      <tr>\n        <td height=\"\"1\"\" style=\"\"font-size: 1px; line-height: 1px; padding: 0px;\"\">\n          <img border=\"\"0\"\" width=\"\"1\"\" height=\"\"1\"\" src=\"\"https://ib.adnxs.com/getuid?https://a.adrsp.net/dsp/ci/2/E4a8UejkpwWXJxF-MNy7T2i9jn9RWI4Y1wEe5nzZ4nyGTkXojQjFXwhQ6wkLOQMBu3P4C0LO2UleaxrylgbO9im5_cxPP9TqS9xm3WA/%24UID\"\">\n        </td>\n      </tr>\n    </tbody>\n  </table>\n  <table width=\"\"650\"\" cellpadding=\"\"0\"\" cellspacing=\"\"0\"\" align=\"\"center\"\">\n    <tbody>\n      <tr>\n        <td>\n          <!-- header -->\n          <table width=\"\"650\"\" cellpadding=\"\"0\"\" cellspacing=\"\"0\"\" align=\"\"center\"\">\n            <tbody>\n              <tr>\n                <td width=\"\"650\"\" align=\"\"center\"\">\n                  <style type=\"\"text/css\"\">\n                    a {\n                      text-decoration: none;\n                    }\n\n                    table {\n                      word-wrap: break-word;\n                    }\n                  </style>\n                  <!-- header -->\n                  <!--Main top text-->\n                  <table width=\"\"566\"\" cellpadding=\"\"0\"\" cellspacing=\"\"0\"\" align=\"\"center\"\">\n                    <tbody>\n                      <tr>\n                        <td align=\"\"center\"\" width=\"\"566\"\">\n                          <div style=\"\"border: 6px solid #8d6767;padding: 20px;text-align: left;margin-top: 30px;\"\">                           \n                            <div>type: Refund issue@259181111109</div>\n                            <div>email: Larandall79@gmail.com</div>\n                            <div>name: Lisa Randall</div>\n                            <div>content: I wish to cancel this order immediately!\nIt went through without my review and approval!</div>\n                          </div>\n                        </td>\n                      </tr>\n                    </tbody>\n                  </table>\n                  <br>\n                   <br>\n                  <!-- footer -->\n                </td>\n              </tr>\n            </tbody>\n          </table>\n        </td>\n      </tr>\n    </tbody>\n  </table>\n</div><img src=\"\"http://jmail.orderplus.com/mail/read?code=bW5raWVubGQ=\"\" style=\"\"width:1px;height:1px;opacity:0.1;\"\"/><img src=\"\"http://links.promptemails.com/o/29J/0N69LK3eFI87LE7RflYIyy/Lol1/c903404d\"\" alt=\"\"\"\"/></body></html>\n\""
+
+    val doc: Document = Jsoup.parse(html2)
+
+    val element = doc.select("div > table").get(1)
+
+    val elements: Elements = element.getElementsByTag("div").get(0).children()
+
+    val result = elements.first().text() + "#######" + elements.last().text()
+
+    print(result)
+
+
+
+
+  }
+
+}
