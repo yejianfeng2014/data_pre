@@ -1,0 +1,19 @@
+1,从原始数据读取文件  ReadDataFrom_raw_email   输入： 原始数据库的表：  输出文件bt_email_101
+
+2，从原始的html中解析 内容：Paers_mail_html 输入：bt_email_100 输出： bt_email_inbox_content_parsed_html,bt_email_inbox_content_parsed_html_language
+
+
+
+3,更新语言检测错 Update_language_error   输入：bt_email_inbox_content_parsed_html_language 输出 ：bt_email_inbox_content_parsed_html_language_fixed
+
+4,统计最长的序列 Sum_long_string 输入表：bt_email_inbox_content_parsed_html_language_temp_1（bt_email_inbox_content_parsed_html_language_fixed）
+    输出表 bt_email_inbox_content_parsed_html_language_temp_2
+
+5,去重轉小寫  Romve_same_data_count 輸入：bt_email_inbox_content_parsed_html_language_fixed   輸出： bt_email_inbox_content_parsed_html_language_temp_4
+
+
+6，英语常见的的基础处理最后转成数字。ParseData2int  未做
+
+
+
+

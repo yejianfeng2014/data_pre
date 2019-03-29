@@ -2,7 +2,6 @@ package emial.pre
 
 import java.io.File
 import java.util.Properties
-
 import com.cybozu.labs.langdetect.DetectorFactory
 import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 import org.apache.spark.sql.functions.udf
