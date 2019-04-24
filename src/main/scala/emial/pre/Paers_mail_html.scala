@@ -38,7 +38,7 @@ object Paers_mail_html {
 
     // todo 修改读的邮件表的内容
 
-    val mysqlDF: DataFrame = spark.read.jdbc(url, "bt_email_100", properties)
+    val mysqlDF: DataFrame = spark.read.jdbc(url, "sqlresult_2303603", properties)
 
     def pareseHtml(str: String): String = {
       val doc: Document = Jsoup.parse(str)
@@ -60,43 +60,43 @@ object Paers_mail_html {
     val my_udf = udf(pareseHtml _) //将自定义函数注册为udf
     val out = mysqlDF.withColumn("parsed_html", my_udf(mysqlDF("text_html"))) //使用udf进行转换操作
 
-    val frame_parsed_html_content = out.select("subject","parsed_html")
+//    val frame_parsed_html_content = out.select("subject","parsed_html")
 
-    frame_parsed_html_content.write.mode(SaveMode.Overwrite).jdbc(url, "bt_email_inbox_content_parsed_html ", properties)
-
-
-    // 语言检测：
+    out.write.mode(SaveMode.Overwrite).jdbc(url, "bt_email_inbox_content_parsed_html ", properties)
 
 
-    val uri = Language_dect.getClass.getResource("/profiles").toURI()
-
-    DetectorFactory.loadProfile(new File(uri))
-
-    def getStringLanguage(str_my: String): String = {
-
-      val detector = DetectorFactory.create()
-
-      detector.append(str_my)
-      try {
-        val str = detector.detect()
-
-        str
-      } catch {
-        case e: Exception => ""
-      }
-    }
-
-    import spark.implicits._
-
-    val my_udf_2 = udf(getStringLanguage _) //将自定义函数注册为udf
-
-    val frame_parsed_html_content_result = frame_parsed_html_content.withColumn("language_dec", my_udf_2($"parsed_html")) //使用udf进行转换操作
-
-
-    frame_parsed_html_content_result.write.mode(SaveMode.Overwrite).jdbc(url, "bt_email_inbox_content_parsed_html_language", properties)
-
-
-
+//    // 语言检测：
+//
+//
+//    val uri = Language_dect.getClass.getResource("/profiles").toURI()
+//
+//    DetectorFactory.loadProfile(new File(uri))
+//
+//    def getStringLanguage(str_my: String): String = {
+//
+//      val detector = DetectorFactory.create()
+//
+//      detector.append(str_my)
+//      try {
+//        val str = detector.detect()
+//
+//        str
+//      } catch {
+//        case e: Exception => ""
+//      }
+//    }
+//
+//    import spark.implicits._
+//
+//    val my_udf_2 = udf(getStringLanguage _) //将自定义函数注册为udf
+//
+//    val frame_parsed_html_content_result = frame_parsed_html_content.withColumn("language_dec", my_udf_2($"parsed_html")) //使用udf进行转换操作
+//
+//
+//    frame_parsed_html_content_result.write.mode(SaveMode.Overwrite).jdbc(url, "bt_email_inbox_content_parsed_html_language", properties)
+//
+//
+//
 
 
     spark.stop()
