@@ -13,6 +13,9 @@ import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
   * 1，直接匹配
   * 2，句子匹配
   * 3，短语匹配
+  *
+  *
+  *
   */
 
 // TODO:  把长文本变为句子
@@ -101,9 +104,6 @@ object LongText2Sentences {
     value.write.mode(saveMode = SaveMode.Overwrite).jdbc(url, "bt_paypal_dispute_info_pre_first_message_buyer_leve5", properties)
 
 
-
-
-    // 添加上连接词的分割，达到了7% 左右
 
 
     spark.stop()
