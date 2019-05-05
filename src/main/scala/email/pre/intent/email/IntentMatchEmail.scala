@@ -5,6 +5,7 @@ import java.util.Properties
 
 import com.cybozu.labs.langdetect.DetectorFactory
 import com.orderplus.UserNlp
+import com.vdurmont.emoji.EmojiParser
 import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 import org.apache.spark.sql.functions.udf
 import pypal_pre.Language_dect
@@ -25,13 +26,16 @@ import pypal_pre.Language_dect
   * 最终匹配结果28.65%
   *
   */
+
+// TODO:  检测10w 条数据生成了14万的结果，查看哪儿出了问题
+// TODO:  把识别和语言检测分开,语言检测不能多核跑
 object IntentMatchEmail {
 
   def main(args: Array[String]): Unit = {
 
     val spark = SparkSession
       .builder()
-      .master("local[1]")
+      .master("local[*]")
       .appName("buyer first dialogue")
       .config("spark.some.config.option", "some-value")
       .getOrCreate()
@@ -39,49 +43,51 @@ object IntentMatchEmail {
     import spark.implicits._
 
     val properties: Properties = new Properties()
-    properties.setProperty("user", "root")
-    properties.setProperty("password", "12354")
+    properties.setProperty("user", "demo")
+    properties.setProperty("password", "123456")
 
-    val url = "jdbc:mysql://172.21.1.91:3306/test?useUnicode=yes&characterEncoding=UTF-8"
+    //    val url = "jdbc:mysql://172.21.1.91:3306/test?useUnicode=yes&characterEncoding=UTF-8"
 
-//    val url_2 = "jdbc:mysql://127.0.0.1:3306/local_test_1"
+    val url_2 = "jdbc:mysql://127.0.0.1:3306/local_data_tongji"
 
     // 测试数据
-    val mysqlDF: DataFrame = spark.read.jdbc(url, "bt_ai_email", properties)
+    val mysqlDF: DataFrame = spark.read.jdbc(url_2, "bt_ai_email", properties)
 
     println(mysqlDF.count()) // 10,000
 
 
     // 过滤掉不符合规则的数据
 
-//     val frame_filtered = mysqlDF.filter($"text_plain" >" " && $"text_html" >" " )
+    //     val frame_filtered = mysqlDF.filter($"text_plain" >" " && $"text_html" >" " )
 
 
-//    println(frame_filtered.count()) // 60602
+    //    println(frame_filtered.count()) // 60602
 
 
-    val frame_selected = mysqlDF.select("id","email_address","subject","text_plain","add_time")
+    val frame_selected = mysqlDF.select("id", "email_address", "subject", "text_plain", "add_time")
 
 
-    val value = frame_selected.filter($"text_plain" >" ")
+    val value = frame_selected.filter($"text_plain" > " ")
+
+    println("过滤完空字符串后的数据： " + value.count())
 
     // 把表情符号去掉
 
     def getFirstBString(str: String): String = {
 
-//      val string = EmojiParser.removeAllEmojis(str)
+      val string = EmojiParser.removeAllEmojis(str)
 
-      val str_new = str.replaceAll("[\\ud800\\udc00-\\udbff\\udfff\\ud800-\\udfff]", " ")
+      //      val str_new = str.replaceAll("[\\ud800\\udc00-\\udbff\\udfff\\ud800-\\udfff]", " ")
 
 
-      val str_1 = str_new.toLowerCase()
+      //      val str_1 = str_new.toLowerCase()
 
-      str_1
+      string.toLowerCase()
 
-//      val str_re = str_new.replaceAll("[\\x{10000}-\\x{10FFFF}]", "")
-//
-//
-//     val str_2 = str_re.replaceAll("\\xFFFD", "")
+      //      val str_re = str_new.replaceAll("[\\x{10000}-\\x{10FFFF}]", "")
+      //
+      //
+      //     val str_2 = str_re.replaceAll("\\xFFFD", "")
 
     }
 
@@ -91,13 +97,10 @@ object IntentMatchEmail {
     val out_replaced = value.withColumn("text_plain_1", my_udf_str($"text_plain")) //使用udf进行转换操作
 
 
-
-    val out_replaced_new = out_replaced.select("id","email_address","subject","text_plain_1","add_time")
-
+    val out_replaced_new = out_replaced.select("id", "email_address", "subject", "text_plain_1", "add_time")
 
 
-
-    val mysqlDF_phrases: DataFrame = spark.read.jdbc(url, "bt_ai_intent_phrase", properties)
+    val mysqlDF_phrases: DataFrame = spark.read.jdbc(url_2, "bt_ai_intent_phrase", properties)
 
     // 意图短语
 
@@ -155,37 +158,7 @@ object IntentMatchEmail {
 
     val my_udf_4 = udf(getFirstBuyerString_4 _) //将自定义函数注册为udf
     val out_4 = out_3.withColumn("level_4", my_udf_4($"text_plain_1")) //使用udf进行转换操作
-    //    out_4.write.mode(saveMode = SaveMode.Overwrite).jdbc(url, "bt_paypal_dispute_info_pre_first_message_buyer_leve1", properties)
-
-
-    // 做语言检测，把非英语的去掉
-
-
-    val uri = Language_dect.getClass.getResource("/profiles").toURI()
-
-    DetectorFactory.loadProfile(new File(uri))
-
-    def getStringLanguage(str_my: String): String = {
-
-      val detector = DetectorFactory.create()
-
-      detector.append(str_my)
-      try {
-        val str = detector.detect()
-
-        str
-      } catch {
-        case e: Exception => ""
-      }
-    }
-
-
-    val my_udf_language = udf(getStringLanguage _) //将自定义函数注册为udf
-
-    val out_5 = out_4.withColumn("language", my_udf_language($"text_plain_1")) //使用udf进行转换操作
-
-
-    out_5.write.mode(SaveMode.Append).jdbc(url, "match_email_2019_5_5", properties)
+    out_4.write.mode(saveMode = SaveMode.Overwrite).jdbc(url_2, "tmp_1", properties)
 
 
     spark.stop()
