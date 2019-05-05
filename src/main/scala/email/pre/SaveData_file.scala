@@ -1,4 +1,4 @@
-package emial.pre
+package email.pre
 
 import java.nio.file.{Files,  Paths}
 import java.util.Properties

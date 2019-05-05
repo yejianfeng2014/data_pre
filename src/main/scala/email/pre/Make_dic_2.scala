@@ -1,4 +1,4 @@
-package emial.pre
+package email.pre
 
 import java.util.Properties
 

@@ -1,8 +1,11 @@
-package emial.pre
+package email.pre
 
 import java.util.Properties
 
-import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
+import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.{DataFrame, Row, SaveMode, SparkSession}
+import org.apache.spark.sql.functions.udf
+import org.apache.spark.sql.types._
 
 
 /**
@@ -10,7 +13,7 @@ import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
   *
   *
   */
-object DATA2myslqbiaoji {
+object Find_2_test {
 
 
 
@@ -32,25 +35,21 @@ object DATA2myslqbiaoji {
 
     // todo 修改读的邮件表的内容
 
-    val mysqlDF: DataFrame = spark.read.jdbc(url, "bt_email_inbox_content_parsed_html_language_temp_1", properties)
+    val mysqlDF: DataFrame = spark.read.jdbc(url, "bt_email_inbox_content_parsed_html_language_temp_10", properties)
 
-    import spark.implicits._
+    import  spark.implicits._
 
+    val frame_2 = mysqlDF.filter($"labels".contains("Order tracking") or ($"labels".contains("Size doesn’t fit")))
 
+//    frame_2.
 
-    val frame = mysqlDF.withColumnRenamed("subject","title")
+    frame_2.write.mode(saveMode = SaveMode.Overwrite).jdbc(url,"bt_email_inbox_content_parsed_html_language_temp_11",properties)
 
-    val frame_1 = frame.withColumnRenamed("parsed_html","content")
-
-
-//    frame_1.withColumnRenamed("beizhu","")
-
-//    val frame_2 = mysqlDF.filter($"labels".contains("Order tracking") or ($"labels".contains("Size doesn’t fit")))
+    println(frame_2.count())
 
 
-    frame_1.write.mode(saveMode = SaveMode.Append).jdbc(url,"t_email",properties)
 
-//    println(frame_2.count())
+
 
 
     spark.stop()

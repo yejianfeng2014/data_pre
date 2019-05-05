@@ -1,4 +1,4 @@
-package pypal_pre.intent
+package email.pre.intent.email
 
 import java.util.Properties
 
@@ -19,7 +19,7 @@ import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
   */
 
 // TODO:  把长文本变为句子
-object LongText2Sentences {
+object LongText2SentencesEmail {
 
   def main(args: Array[String]): Unit = {
 

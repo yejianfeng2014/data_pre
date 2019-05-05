@@ -1,32 +1,21 @@
-package pypal_pre.intent
+package email.pre.intent.email
 
 import java.io.File
 import java.util.Properties
 
 import com.cybozu.labs.langdetect.DetectorFactory
 import com.orderplus.UserNlp
-import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 import org.apache.spark.sql.functions.udf
+import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 import pypal_pre.Language_dect
-
 
 /**
   *
   * 查看当前的意图匹配能力水平，
-  * 1，直接匹配
-  * 2，句子匹配
-  * 3，短语匹配
-  * 4，包含匹配 20% 左右
-  * 5，单词包含匹配
-  *
-  * 测试数据量：45105
-  *
-  * 过滤完英语的数量：32740
-  *
-  * 最终匹配结果28.65%
+  * 调出里面需要添加颜色的单词
   *
   */
-object IntentMatch {
+object IntentMatch_marked_Email {
 
   def main(args: Array[String]): Unit = {
 

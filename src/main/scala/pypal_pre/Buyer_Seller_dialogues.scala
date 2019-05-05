@@ -60,6 +60,7 @@ object Buyer_Seller_dialogues {
           //          array_2.toArray()
           val str = nObject.getString("posted_by")
           val str_2 = nObject.getString("content")
+
           val str_re = str_2.replaceAll("[\\x{10000}-\\x{10FFFF}]", "")
 
           if (str == "BUYER") {
